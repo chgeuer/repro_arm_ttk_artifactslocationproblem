@@ -1,10 +1,9 @@
 #!/bin/bash
 
+outputArmJsonDir="$(pwd)/ARM-JSON"
+[[ -d "$outputArmJsonDir" ]] || mkdir "$outputArmJsonDir" 
 
-zipDir="$(pwd)/zip"
-[[ -d "$zipDir" ]] || mkdir "$zipDir" 
+az bicep build --stdout --file src/mainTemplate.bicep > "${outputArmJsonDir}/mainTemplate.json"
 
-az bicep build --stdout --file src/mainTemplate.bicep > "${zipDir}/mainTemplate.json"
-
-cp    src/createUiDefinition.json "${zipDir}"
-cp -a src/scripts                 "${zipDir}"
+cp    src/createUiDefinition.json "${outputArmJsonDir}"
+ cp -a src/scripts                 "${outputArmJsonDir}"
