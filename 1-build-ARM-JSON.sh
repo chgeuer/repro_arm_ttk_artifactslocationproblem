@@ -6,4 +6,4 @@ outputArmJsonDir="$(pwd)/ARM-JSON"
 az bicep build --stdout --file src/mainTemplate.bicep > "${outputArmJsonDir}/mainTemplate.json"
 
 cp    src/createUiDefinition.json "${outputArmJsonDir}"
- cp -a src/scripts                 "${outputArmJsonDir}"
+cp -a src/scripts                 "${outputArmJsonDir}"

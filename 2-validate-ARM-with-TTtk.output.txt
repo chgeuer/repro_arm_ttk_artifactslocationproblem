@@ -1,0 +1,12 @@
+
+Validating ARM-JSON\createUiDefinition.json
+
+Validating ARM-JSON\mainTemplate.json
+  artifacts parameter
+    [-] artifacts parameter (86 ms)
+        The _artifactsLocation and _artifactsLocationSasToken parameters in "mainTemplate.json" 
+        must not have a defaulValue in a nested template.
+
+Pass  : 49
+Fail  : 1
+Total : 50
