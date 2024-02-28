@@ -1,7 +1,11 @@
 
 # Repro for the `The _artifactsLocation and _artifactsLocationSasToken parameters must not have a defaultValue in a nested template` problem
 
-In `mainTemplate.bicep` can either do **with** default values,
+The [ARM TTK](https://github.com/Azure/arm-ttk/) is used by Azure Marketplace for manual validation of submitted managed applications. Unfortunately, ARM TTK complains about a problem related to the `_artifactsLocation` and `_artifactsLocationSasToken` parameters. 
+
+In this repro, we compile a set of Bicep sources into an ARM JSON, which we validate using ARM TTK.
+
+In `mainTemplate.bicep`, these 2 parameters either **have** default values,
 
 ```bicep
 param _artifactsLocation string = deployment().properties.templateLink.uri
@@ -10,7 +14,7 @@ param _artifactsLocation string = deployment().properties.templateLink.uri
 param _artifactsLocationSasToken string = ''
 ```
 
-or **without**:
+or **don't**:
 
 ```bicep
 param _artifactsLocation string
@@ -19,7 +23,7 @@ param _artifactsLocation string
 param _artifactsLocationSasToken string
 ```
 
-Then, these values are passed-down to a nested template
+Subsequently, we passe these values down to a nested template (please note that I renamed the receiving parameters to avoid confusion):
 
 ```bicep
 module nestedModule './nestedtemplates/meteredBillingDependencies.bicep' = {
@@ -30,7 +34,8 @@ module nestedModule './nestedtemplates/meteredBillingDependencies.bicep' = {
   }
 }
 ```
-Note that in the nested template, there are no default values at all. 
+
+Note that in the nested template, the `artifactsLocation` and `artifactsLocationSasToken` parameters have no default values at all. 
 
 ## When using default values **in the main template**
 
@@ -53,12 +58,13 @@ Validating ARM-JSON\mainTemplate.json
         must not have a defaulValue in a nested template.
 ```
 
-However, looking at the docs (https://github.com/Azure/azure-quickstart-templates/blob/master/1-CONTRIBUTION-GUIDE/best-practices.md#deployment-artifacts-nested-templates-scripts), this seems to be the correct way. But ARM TTK [artifacts-parameter.test.ps1](https://github.com/Azure/arm-ttk/blob/master/arm-ttk/testcases/deploymentTemplate/artifacts-parameter.test.ps1#L68) triggers the error.
+However, looking at the samples (https://github.com/Azure/azure-quickstart-templates/blob/master/1-CONTRIBUTION-GUIDE/best-practices.md#deployment-artifacts-nested-templates-scripts), this seems to be the correct way. 
 
+But ARM TTK [artifacts-parameter.test.ps1](https://github.com/Azure/arm-ttk/blob/master/arm-ttk/testcases/deploymentTemplate/artifacts-parameter.test.ps1#L68) triggers the error. It seems the `$IsMainTemplate` isn't properly coming in...
 
 ## When removing the defaults in the main template
 
-The validation from ARM TTK moves to the `createUiDefinition.json` file:
+When removing the defaults for `_artifactsLocation` and `_artifactsLocationSasToken` in the main template, the validation from ARM TTK moves to the `createUiDefinition.json` file... 
 
 ```text
 Validating ARM-JSON\createUiDefinition.json
