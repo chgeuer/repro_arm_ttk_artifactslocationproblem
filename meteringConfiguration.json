@@ -1,0 +1,10 @@
+{
+  "servicePrincipalCreationURL": "https://spnc72raj24r7wm.azurewebsites.net",
+  "publisherVault": {
+    "publisherSubscription": "9838302b-c9ac-4e97-8b61-101b52f6b961",
+    "vaultResourceGroupName": "metered-billing-accelerator-20240115",
+    "vaultName": "spnc72raj24r7wm",
+    "bootstrapSecretName": "BootstrapSecret"
+  },
+  "amqpEndpoint": "https://spnc72raj24r7wm.servicebus.windows.net/metering"
+}
